@@ -4,7 +4,7 @@
 
 A responsive, interactive dashboard for visualizing call reports from CSV or JSON files. Built using HTML, JavaScript, and Plotly.js. No server or framework required — just open in a browser!
 
-https://vishnugnath.github.io/HTML/
+[https://vishnugnath.github.io/HTML/](https://vishnugnath.github.io/call-report-dashboard/)
 ---
 
 ## 🔧 Features
