@@ -4,6 +4,7 @@
 
 A responsive, interactive dashboard for visualizing call reports from CSV or JSON files. Built using HTML, JavaScript, and Plotly.js. No server or framework required — just open in a browser!
 
+https://vishnugnath.github.io/HTML/
 ---
 
 ## 🔧 Features
@@ -40,7 +41,7 @@ A responsive, interactive dashboard for visualizing call reports from CSV or JSO
 ### 1. Clone or Download
 
 ```bash
-git clone https://github.com/yourusername/call-report-dashboard.git
+git clone https://github.com/Vishnugnath/call-report-dashboard.git
 cd call-report-dashboard
 ````
 
@@ -77,9 +78,8 @@ All dependencies are loaded via CDN:
 
 ## 📸 Screenshots
 
-![Dashboard Screenshot](screenshot.png) <!-- Add your own screenshot if available -->
+![image](https://github.com/user-attachments/assets/ac71ad96-bb04-44bb-ae67-1eba2bd87e84)
 
----
 
 ## 📝 License
 
@@ -89,12 +89,5 @@ MIT License. Feel free to use and modify as needed.
 
 ## ✨ Author
 
-Made by \[Your Name].
+Made by \Vishnu G Nath
 For support or feedback, open an issue or reach out!
-
-```
-
----
-
-Let me know if you want a version with a sample data file link or deployed live demo instructions (e.g., GitHub Pages).
-```
