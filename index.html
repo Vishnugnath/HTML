@@ -19,9 +19,8 @@
       background-color: #1a202c;
       color: #f9fafb;
     }
-    h2 {
-      text-align: center;
-    }
+    h2 { text-align: center; }
+
     .controls {
       text-align: center;
       margin-bottom: 20px;
@@ -32,6 +31,7 @@
       font-size: 14px;
       border-radius: 5px;
     }
+
     .kpi-container {
       display: flex;
       gap: 20px;
@@ -66,25 +66,17 @@
       transform: translateY(-5px);
       box-shadow: 0 12px 20px rgba(0,0,0,0.2);
     }
-    .kpi h3 {
-      margin: 0;
-      font-size: 30px;
-    }
-    .kpi p {
-      margin: 5px 0 0;
-      font-size: 15px;
-    }
+    .kpi h3 { margin: 0; font-size: 30px; }
+    .kpi p { margin: 5px 0 0; font-size: 15px; }
+
     body.dark-mode .kpi:nth-child(1) {
       background: linear-gradient(135deg, #2f855a, #276749);
-      box-shadow: 0 6px 12px rgba(39, 103, 73, 0.6);
     }
     body.dark-mode .kpi:nth-child(2) {
       background: linear-gradient(135deg, #2b6cb0, #2c5282);
-      box-shadow: 0 6px 12px rgba(44, 82, 130, 0.6);
     }
     body.dark-mode .kpi:nth-child(3) {
       background: linear-gradient(135deg, #b83280, #97266d);
-      box-shadow: 0 6px 12px rgba(151, 38, 109, 0.6);
     }
 
     #dashboard {
@@ -93,6 +85,7 @@
       gap: 30px;
       margin-top: 30px;
     }
+
     .chart-container {
       background-color: white;
       padding: 10px;
@@ -101,16 +94,18 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      height: 600px; /* Increased height */
+      height: 600px;
     }
     body.dark-mode .chart-container {
       background-color: #2d3748;
     }
+
     .chart-toolbar {
       margin-top: 10px;
       text-align: center;
       flex-shrink: 0;
     }
+
     .chart-toolbar button {
       font-size: 14px;
       padding: 7px 12px;
@@ -121,14 +116,16 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     .chart-toolbar button:hover {
       background-color: #3182ce;
     }
-    /* Make sure Plotly div uses remaining vertical space */
+
     .chart-container > div:first-child {
       flex-grow: 1;
-      min-height: 400px; /* increased minimum height */
+      min-height: 400px;
     }
+
     @media (max-width: 768px) {
       #dashboard {
         grid-template-columns: 1fr;
@@ -173,7 +170,7 @@
     <div class="chart-container">
       <div id="stageFunnel"></div>
       <div class="chart-toolbar">
-        <button onclick="downloadChart('stageFunnel', 'Lead Funnel')">Download</button>
+        <button onclick="downloadChart('stageFunnel', 'Lead Stages')">Download</button>
       </div>
     </div>
   </div>
@@ -243,37 +240,48 @@
       document.getElementById('kpiTotalDials').textContent = data.length;
       document.getElementById('kpiEffectiveCalls').textContent = effectiveCalls;
 
+      const outcomeKeys = Object.keys(callOutcomes);
+      const outcomeValues = Object.values(callOutcomes);
+      const outcomeColors = outcomeKeys.map((_, i) =>
+        `hsl(${i * (360 / outcomeKeys.length)}, 70%, 50%)`
+      );
+
       Plotly.newPlot('barChart', [{
         type: 'bar',
-        x: Object.keys(callOutcomes),
-        y: Object.values(callOutcomes),
-        marker: { color: '#4299e1' },
-        text: Object.values(callOutcomes).map(String),
+        x: outcomeKeys,
+        y: outcomeValues,
+        marker: { color: outcomeColors },
+        text: outcomeValues.map(String),
         textposition: 'auto',
-        mode: 'markers+lines+text',
-        // Add markers to bars
-        marker: { color: '#4299e1', size: 10 },
+        textfont: { size: 16 }
       }], {
         title: '📈 Call Outcomes',
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
         margin: { t: 40, b: 60 },
         yaxis: { automargin: true }
-      }, {responsive: true});
+      }, { responsive: true });
+
+      const stageKeys = Object.keys(leadStages);
+      const stageValues = Object.values(leadStages);
+      const stageColors = stageKeys.map((_, i) =>
+        `hsl(${(i * 360 / stageKeys.length + 180) % 360}, 60%, 50%)`
+      );
 
       Plotly.newPlot('stageFunnel', [{
-        type: 'funnel',
-        y: Object.keys(leadStages),
-        x: Object.values(leadStages),
-        textinfo: "value+percent previous",
-        marker: { color: '#9f7aea' }
+        type: 'pie',
+        labels: stageKeys,
+        values: stageValues,
+        hole: 0.5,
+        marker: { colors: stageColors },
+        textinfo: "label+value+percent",
+        textfont: { size: 16 }
       }], {
-        title: '🔁 Lead Funnel',
+        title: '📈 Lead Stages',
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
-        margin: { t: 40, b: 60 },
-        yaxis: { automargin: true }
-      }, {responsive: true});
+        margin: { t: 40, b: 60 }
+      }, { responsive: true });
     }
 
     function processFile(data) {
@@ -321,6 +329,7 @@
 
     document.getElementById('toggleDarkMode').onclick = () => {
       document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'on' : 'off');
     };
 
     document.getElementById('downloadCSV').onclick = () => {
@@ -336,6 +345,11 @@
     userSelect.onchange = updateDashboard;
     startDateInput.onchange = updateDashboard;
     endDateInput.onchange = updateDashboard;
+
+    // Persistent dark mode on load
+    if (localStorage.getItem('darkMode') === 'on') {
+      document.body.classList.add('dark-mode');
+    }
   </script>
 </body>
 </html>
